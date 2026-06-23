@@ -37,3 +37,43 @@ class HTMLNode:
                 f"{''.join(str(i) for i in self.children) if self.children else self.value}"
                 f"</{self.tag}>"
             )
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag = None, value = None, props = None):
+        super().__init__(tag, value, None, props)
+
+
+    def to_html(self):
+        if(self.value == None):
+            raise ValueError
+        if(self.tag == None):
+            return self.value 
+        
+        return (
+                f"<{self.tag}{' ' + self.props_to_html() if self.props else ''}>"
+                f"{self.value}"
+                f"</{self.tag}>"
+            )
+
+    def __repr__(self):
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props = None):
+        super().__init__(tag, None, children, props)
+
+
+    def to_html(self):
+        if(self.children == None):
+            raise ValueError("No Children")
+        if(self.tag == None):
+            raise ValueError("No Tag")
+        
+        return (
+                f"<{self.tag}{' ' + self.props_to_html() if self.props else ''}>"
+                f"{''.join(i.to_html() for i in self.children)}"
+                f"</{self.tag}>"
+            )
+
+    def __repr__(self):
+        return f"ParentNode({self.tag}, {self.children}, {self.props})"
