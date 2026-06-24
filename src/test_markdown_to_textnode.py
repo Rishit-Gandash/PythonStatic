@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from markdown_to_textnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from markdown_to_textnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, text_to_textnodes
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -132,6 +132,97 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         text = "[wonder_of_you](will find you)"
         matches = extract_markdown_images(text)
         self.assertListEqual([], matches)
+
+    def test_plain_text(self):
+        result = text_to_textnodes("just plain text")
+
+        expected = [
+            TextNode("just plain text", TextType.TEXT)
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_bold_text(self):
+        result = text_to_textnodes(
+            "this is **bold** text"
+        )
+
+        expected = [
+            TextNode("this is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" text", TextType.TEXT),
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_code_text(self):
+        result = text_to_textnodes(
+            "this is `code` text"
+        )
+
+        expected = [
+            TextNode("this is ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" text", TextType.TEXT),
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_italic_text(self):
+        result = text_to_textnodes(
+            "this is _italic_ text"
+        )
+
+        expected = [
+            TextNode("this is ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" text", TextType.TEXT),
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_image(self):
+        result = text_to_textnodes(
+            "text ![rick](rick.png) more text"
+        )
+
+        expected = [
+            TextNode("text ", TextType.TEXT),
+            TextNode("rick", TextType.IMAGE, "rick.png"),
+            TextNode(" more text", TextType.TEXT),
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_link(self):
+        result = text_to_textnodes(
+            "go to [Boot.dev](https://boot.dev)"
+        )
+
+        expected = [
+            TextNode("go to ", TextType.TEXT),
+            TextNode("Boot.dev", TextType.LINK, "https://boot.dev"),
+        ]
+
+        self.assertEqual(result, expected)
+
+    def test_mixed_markdown(self):
+        result = text_to_textnodes(
+            "This is **bold** and `code` and _italic_"
+        )
+
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+        ]
+
+        self.assertEqual(result, expected)
+
+
 
 if __name__ == "__main__":
     unittest.main()
