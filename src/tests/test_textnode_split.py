@@ -1,8 +1,8 @@
 import unittest
 
-from textnode import TextNode, TextType
+from src.textnode import TextNode, TextType
 
-from markdown_to_textnode import split_nodes_images, split_nodes_link
+from src.markdown_to_textnode import split_nodes_images, split_nodes_link
 
 
 
