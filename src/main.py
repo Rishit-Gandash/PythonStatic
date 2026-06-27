@@ -3,8 +3,8 @@ import sys
 import shutil
 from html import markdown_to_html_node
 
-def generate_public():
-    dst_path = "./public/"
+def generate_docs():
+    dst_path = "./docs/"
     src_path = "./static/"
     shutil.rmtree(os.path.normpath(dst_path))
     shutil.copytree(os.path.normpath(src_path), os.path.normpath(dst_path))
@@ -67,7 +67,7 @@ def main():
         basepath = sys.argv[1]
     else: 
         basepath = "/"
-#    generate_public()
+    generate_docs()
     from_path = "./content"
     dest_path = "./docs"
     template_path = "./template.html"
