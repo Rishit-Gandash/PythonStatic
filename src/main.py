@@ -1,5 +1,6 @@
-import os 
-import shutil 
+import os
+import sys
+import shutil
 from html import markdown_to_html_node
 
 def generate_public():
@@ -19,7 +20,7 @@ def extract_title(md):
 
     return header.strip()
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, 'r') as f: 
         md = f.read()
@@ -34,6 +35,8 @@ def generate_page(from_path, template_path, dest_path):
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html_string)
+    template = template.replace(r'href="/', f'href="{basepath}')
+    template = template.replace(r'src="/', f'src="{basepath}')
 
     path_dir = os.path.dirname(dest_path)
     if(not os.path.isdir(path_dir)):
@@ -44,7 +47,7 @@ def generate_page(from_path, template_path, dest_path):
 
     return
 
-def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path, basepath):
     list_files = os.listdir(dir_path_content)
 
     for file in list_files:
@@ -52,19 +55,24 @@ def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
         if(os.path.isfile(file_path)):
             if file.endswith(".md"):
                 dest_path = os.path.join(dest_dir_path, file[:-2:] + "html")
-                generate_page(file_path, template_path, dest_path)
+                generate_page(file_path, template_path, dest_path, basepath)
 
         else:
             dest_path = os.path.join(dest_dir_path, file)
-            generate_pages_recursively(file_path, template_path, dest_path)
+            generate_pages_recursively(file_path, template_path, dest_path, basepath)
 
 
 def main():
-    generate_public()
-    from_path = "/home/splitzerr/Coding/Projects/PyStatic/content/"
-    dest_path = "/home/splitzerr/Coding/Projects/PyStatic/public/"
-    template_path = "/home/splitzerr/Coding/Projects/PyStatic/template.html"
-    generate_pages_recursively(from_path, template_path, dest_path)
+    if(len(sys.argv) > 1):
+        basepath = sys.argv[1]
+    else: 
+        basepath = "/"
+#    generate_public()
+    from_path = "./content"
+    dest_path = "./docs"
+    template_path = "./template.html"
+
+    generate_pages_recursively(from_path, template_path, dest_path, basepath)
 
 
 
