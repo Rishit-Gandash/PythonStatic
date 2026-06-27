@@ -1,7 +1,7 @@
-from .htmlnode import HTMLNode, LeafNode, ParentNode
-from .blocks import markdown_to_blocks, block_to_block_type, BlockType
-from .markdown_to_textnode import text_to_textnodes
-from .textnode import text_node_to_html_node, TextNode, TextType
+from htmlnode import HTMLNode, LeafNode, ParentNode
+from blocks import markdown_to_blocks, block_to_block_type, BlockType
+from markdown_to_textnode import text_to_textnodes
+from textnode import text_node_to_html_node, TextNode, TextType
 
 def text_to_children(text):
     textnodes = text_to_textnodes(text)
