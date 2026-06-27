@@ -21,28 +21,45 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     return block_list
 
 def block_to_block_type(markdown_block):
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
+    for i in range(1, 7): 
+        start = "#" * i + " "
+        if(markdown_block.startswith(start)):
+            return BlockType.HEADING
 
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    if(markdown_block[0] == "#"):
-        return BlockType.HEADING
-    
-    
-    
+    if(markdown_block.startswith("```") and markdown_block.endswith("```")):
+        return BlockType.CODE
+
+    block_list = markdown_block.split("\n")
+
+    quote = True
+    for line in block_list:
+        if(not line.startswith(">")):
+            quote = False 
+            break
+
+    if(quote):
+        return BlockType.QUOTE
+
+
+    ul = True
+    for line in block_list:
+        if(not line.startswith("- ")):
+            ul = False 
+            break
+
+    if(ul):
+        return BlockType.ULIST
+
+
+    ol = True
+    i = 1 
+    for line in block_list:
+        if(not line.startswith(f"{i}. ")):
+            ol = False 
+            break
+        i += 1
+
+    if(ol):
+        return BlockType.OLIST
+
+    return BlockType.PARA

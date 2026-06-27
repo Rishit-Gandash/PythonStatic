@@ -1,9 +1,7 @@
-from .textnode import TextNode, TextType
+import os 
+import shutil 
 
-def main():
-    t1 = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(t1)
-
-
-if __name__ == "__main__": 
-    main()
+dst_path = "./public/"
+src_path = "./static/"
+shutil.rmtree(os.path.normpath(dst_path))
+shutil.copytree(os.path.normpath(src_path), os.path.normpath(dst_path))
